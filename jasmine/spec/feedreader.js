@@ -27,6 +27,7 @@ $(function() {
          it('links are not empty', function() {
            allFeeds.forEach(function(element) {
              expect(element.url).toBeDefined();
+             expect(element.url).not.toBe('');
            });
          });
 
@@ -36,6 +37,7 @@ $(function() {
          it('names not empty', function() {
            allFeeds.forEach(function(element) {
              expect(element.name).toBeDefined();
+             expect(element.name).not.toBe('');
            });
          });
        });
@@ -73,13 +75,11 @@ $(function() {
          * 和异步的 done() 函数。
          */
          beforeEach(function(done){
-           loadFeed(0,function (){
-             done();
-           });
+           loadFeed(1,done);
          });
-         it('Async loadFeed', function(done) {
-             expect($(".feed").find(".entry").length).not.toBe(0);
-             done();
+         it('Async loadFeed', function() {
+           console.log($(".feed").find(".entry").length);
+           expect($(".feed").find(".entry").length).not.toBe(0);
          });
        });
     /* TODO: 写一个叫做 "New Feed Selection" 的测试用例 */
@@ -88,15 +88,19 @@ $(function() {
          * 写一个测试保证当用 loadFeed 函数加载一个新源的时候内容会真的改变。
          * 记住，loadFeed() 函数是异步的。
          */
-         var content = $(".feed").find(".entry");
+         var content_1,
+             content_2;
          beforeEach(function(done){
            loadFeed(1,function (){
-             done();
+             content_1 = $(".feed").find(".entry");
+             loadFeed(2,function (){
+               content_2 = $(".feed").find(".entry");
+               done();
+             });
            });
          });
-         it('should change content', function(done) {
-             expect((content === $(".feed").find(".entry"))).not.toBe(true);
-             done();
+         it('should change content', function() {
+             expect(content_2).not.toBe(content_1);
          });
        });
 }());
